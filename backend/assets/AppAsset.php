@@ -9,18 +9,21 @@ use yii\web\AssetBundle;
  */
 class AppAsset extends AssetBundle
 {
-    public $basePath = '@webroot';
-    public $baseUrl = '@web';
+//    public $basePath = '@webroot';
+//    public $baseUrl = '@web';
+    public $sourcePath = '@public/assets';
+
     public $css = [
         'css/site.css',
     ];
+
     public $js = [
-//        'js/react.js',
-//        'js/react-dom.js',
-//        'js/babel.min.js',
+        'js/script.js',
     ];
+
     public $depends = [
         'yii\web\YiiAsset',
         'yii\bootstrap\BootstrapAsset',
+        '\rmrevin\yii\fontawesome\AssetBundle'
     ];
 }

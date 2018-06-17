@@ -1,4 +1,7 @@
 <?php
+
+use yii\helpers\FileHelper;
+
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),
@@ -37,7 +40,28 @@ return [
         'errorHandler' => [
             'errorAction' => 'site/error',
         ],
+        'assetManager' => [
+            'class' => 'yii\web\AssetManager',
+            'linkAssets' => true,
+            'hashCallback' =>  function ($path) {
+                $assetPath = array_map(function($item) {
+                    return Yii::getAlias($item);
+                }, ['@public/assets']);
 
+                if (in_array($path, $assetPath)) {
+                    $files = FileHelper::findFiles($path, ['only' => ['*.js', '*.css']]);
+                    $max = 0;
+                    foreach ($files as $file) {
+                        $max = max($max, filemtime($file));
+                    }
+                    $hash = $path.$max;
+                } else {
+                    $path = (is_file($path) ? dirname($path) : $path).filemtime($path);
+                    $hash = $path.Yii::getVersion();
+                }
+                return sprintf('%x', crc32($hash));
+            }
+        ],
         'urlManager' => [
             'class' => 'yii\web\UrlManager',
             // Disable index.php

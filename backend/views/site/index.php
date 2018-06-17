@@ -1,7 +1,8 @@
 <?php
 
 
-use yii\helpers\Html;
+use yii\bootstrap\Modal;
+use \backend\components\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
@@ -9,68 +10,103 @@ use yii\helpers\Url;
 
 $this->title = 'My Yii Application';
 
+$this->registerJs(<<<JS
+
+$(document)
+    .on('click', '.show-news', function(e) {
+        e.preventDefault();
+        var self = $(this);
+        var modal = $("#modal-news");
+        modal.find('.modal-header').text(self.data('title'));
+        modal.modal('show');
+        modal.find('.modal-body').html('').load(self.data('url'), function(response, status, xhr) {
+            if (status === "error") {
+                modal.modal('hide');
+                alert('Ошибка');
+            }
+        });
+        return false;
+    })
+    .on('click', '.like-ico', function(e) {
+        e.preventDefault();
+        var self = $(this);
+        // var modal = $("#modal-news");
+        if (self.hasClass('ico-off')) {
+            self.attr('class', 'like-ico like-ico-on');
+            console.log('white');
+        } else {
+            self.attr('class', 'like-ico ico-off');
+        }
+        // modal.find('.modal-header').text(self.data('title'));
+        // modal.modal('show');
+        // modal.find('.modal-body').html('').load(self.data('url'), function(response, status, xhr) {
+        //     if (status === "error") {
+        //         modal.modal('hide');
+        //         alert('Ошибка');
+        //     }
+        // });
+        // return false;
+    })
+    .on('click', '.dislike-ico', function(e) {
+        e.preventDefault();
+        var self = $(this);
+        // var modal = $("#modal-news");
+        if (self.hasClass('ico-off')) {
+            self.attr('class', 'dislike-ico dislike-ico-on');
+        } else {
+            self.attr('class', 'dislike-ico ico-off');
+        }
+    });
+
+
+
+var stopwatchTimeout;
+var seconds = 0;
+
+$('#modal-news')
+    .on('shown.bs.modal', function (e) {
+        var h1 = document.getElementsByTagName('h1')[0];
+        seconds = 0;
+    
+        
+        function add() {
+            seconds++;
+            h1.textContent = seconds;
+            timer();
+        }
+    
+        function timer() {
+            stopwatchTimeout = setTimeout(add, 1000);
+        }
+        timer();
+    })
+    .on('hidden.bs.modal', function(e) {
+        console.log(seconds);
+        clearTimeout(stopwatchTimeout);
+    });
+
+JS
+);
+
 ?>
 
-<div class="site-index">
+<?= Modal::widget(['class' => 'modal-md', 'id' => 'modal-news']);?>
 
-    <div class="container">
-        <div class="col-md-12">
-            <ul>
-                <? foreach ($articles as $article): ?>
-                    <p style="text-align: center; font-size: 18px;"><?= Html::tag('a', $article->title, ['href' => $article->url, 'target' => '_blank']) ?></p>
-                    <li style="display: inline-block">
-                        <img style="float: left; margin: 0 20px 20px 0" src="<?= Url::to('@web/images/').$article->image_path ?>">
-                        <div><?= $article->article ?></div>
-                    </li>
-                    <hr>
-                <? endforeach; ?>
-            </ul>
+<div class="col-md-5 col-md-push-3">
+    <? foreach ($articles as $i => $article): ?>
+        <div class="news-wrapper show-news" data-title="<?= $article->title ?>" data-url="<?= Url::to(['site/show-news', 'id' => $article->id])?>" >
+            <?= Html::img(Url::to('@web/images/').$article->image_path); ?>
+            <div class="news-title-wrapper">
+                <?= Html::tag('h3', $article->title, ['class' => 'news-title']); ?>
+            </div>
         </div>
-    </div>
-
-<!--    <div class="jumbotron">-->
-<!--        <h1>Congratulations!</h1>-->
-<!---->
-<!--        <p class="lead">You have successfully created your Yii-powered application.</p>-->
-<!---->
-<!--        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>-->
-<!--    </div>-->
-
-
-<!--    <div class="body-content">-->
-<!---->
-<!--        <div class="row">-->
-<!--            <div class="col-lg-4">-->
-<!--                <h2>Heading</h2>-->
-<!---->
-<!--                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et-->
-<!--                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip-->
-<!--                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu-->
-<!--                    fugiat nulla pariatur.</p>-->
-<!---->
-<!--                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>-->
-<!--            </div>-->
-<!--            <div class="col-lg-4">-->
-<!--                <h2>Heading</h2>-->
-<!---->
-<!--                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et-->
-<!--                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip-->
-<!--                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu-->
-<!--                    fugiat nulla pariatur.</p>-->
-<!---->
-<!--                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>-->
-<!--            </div>-->
-<!--            <div class="col-lg-4">-->
-<!--                <h2>Heading</h2>-->
-<!---->
-<!--                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et-->
-<!--                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip-->
-<!--                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu-->
-<!--                    fugiat nulla pariatur.</p>-->
-<!---->
-<!--                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>-->
-<!--            </div>-->
-<!--        </div>-->
-
-    </div>
+        <div class="text-center" style="background: rgba(0, 0, 0, 0.9);">
+            <div style="padding: 5px 0;">
+                <span class="like-ico ico-off"><?=Html::fa('heart fa-2x')?></span>
+                <span class="dislike-ico ico-off"><?=Html::fa('thumbs-down fa-2x')?></span>
+            </div>
+        </div>
+        <?= Html::tag('p', $article->firstTag->tag.', '.$article->secondTag->tag); ?>
+        <hr>
+    <? endforeach; ?>
 </div>

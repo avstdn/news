@@ -6,6 +6,7 @@ namespace backend\models;
  * This is the model class for table "articles".
  *
  * @property int $id
+ * @property int $article_id
  * @property string $title
  * @property string $url
  * @property string $language
@@ -14,6 +15,9 @@ namespace backend\models;
  * @property string $date
  * @property string $category
  * @property string $content
+ * @property string $first_tag
+ * @property string $second_tag
+ * @property string $article
  * @property string $image_path
  */
 class Articles extends \yii\db\ActiveRecord

@@ -21,7 +21,8 @@
         "grekts/rss-parser": ">=1.0.1",
         "miniflux/picofeed": "@stable",
         "keltstr/yii2-simplehtmldom": "dev-master",
-        "igogo5yo/yii2-upload-from-url": "^1.4"
+        "igogo5yo/yii2-upload-from-url": "^1.4",
+        "rmrevin/yii2-fontawesome": "2.10.*"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
