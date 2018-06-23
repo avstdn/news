@@ -15,10 +15,14 @@ class AppAsset extends AssetBundle
 
     public $css = [
         'css/site.css',
+        'css/animate.css',
+        'css/chartist.css',
     ];
 
     public $js = [
         'js/script.js',
+        'js/chartist.js',
+        'js/moment.js',
     ];
 
     public $depends = [

@@ -6,8 +6,8 @@
  * Time: 18:53
  */
 
+use backend\models\Articles;
 use yii\helpers\Url;
-use \backend\models\Articles;
 
 /* @var $this yii\web\View */
 /* @var $article Articles */
@@ -15,12 +15,12 @@ use \backend\models\Articles;
 ?>
 <div class="single-news">
     <div class="row">
-        <div class="col-md-8 col-md-push-2">
+        <div class="col-md-6 col-md-push-3">
             <img src="<?= Url::to('@web/images/').$article->image_path ?>">
         </div>
     </div>
     <hr>
     <p><?= $article->article ?></p>
 </div>
-<!--<hr>-->
-<!--<h1><time>0</time></h1>-->
+<hr>
+<span>Время просмотра новости: <time>0</time> сек.</span>

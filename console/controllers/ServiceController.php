@@ -202,6 +202,7 @@ class ServiceController extends Controller
             Console::startProgress(0, count($articles));
             foreach ($articles as $i => $article) {
 //                $this->stdout("$articlesCnt ");
+                if (!isset($article->getCategories()[0])) continue;
                 Console::updateProgress($i, count($articles));
 
                 $firstTag = null;

@@ -1,14 +1,14 @@
 <?php
 
 
+use backend\components\Html;
 use yii\bootstrap\Modal;
-use \backend\components\Html;
 use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $articles[] Articles */
 
-$this->title = 'My Yii Application';
+$this->title = 'Новости';
 
 $this->registerJs(<<<JS
 
@@ -33,7 +33,6 @@ $(document)
         // var modal = $("#modal-news");
         if (self.hasClass('ico-off')) {
             self.attr('class', 'like-ico like-ico-on');
-            console.log('white');
         } else {
             self.attr('class', 'like-ico ico-off');
         }
@@ -53,8 +52,12 @@ $(document)
         // var modal = $("#modal-news");
         if (self.hasClass('ico-off')) {
             self.attr('class', 'dislike-ico dislike-ico-on');
+            self.parent().parent().parent().addClass('animated fadeOutLeftBig').hide(500);
+            // self.parent().parent().prev().addClass('animated fadeOutLeftBig');
+            // console.log();
         } else {
             self.attr('class', 'dislike-ico ico-off');
+            // self.parent().parent().closest('div.news-wrapper').attr('class', 'fadeOutLeftBig');
         }
     });
 
@@ -65,7 +68,7 @@ var seconds = 0;
 
 $('#modal-news')
     .on('shown.bs.modal', function (e) {
-        var h1 = document.getElementsByTagName('h1')[0];
+        var h1 = document.getElementsByTagName('time')[0];
         seconds = 0;
     
         
@@ -90,23 +93,29 @@ JS
 
 ?>
 
-<?= Modal::widget(['class' => 'modal-md', 'id' => 'modal-news']);?>
+<?= Modal::widget(['size' => Modal::SIZE_LARGE, 'id' => 'modal-news']);?>
 
-<div class="col-md-5 col-md-push-3">
+
+
+<div class="col-md-6 col-md-push-3">
+
     <? foreach ($articles as $i => $article): ?>
-        <div class="news-wrapper show-news" data-title="<?= $article->title ?>" data-url="<?= Url::to(['site/show-news', 'id' => $article->id])?>" >
-            <?= Html::img(Url::to('@web/images/').$article->image_path); ?>
-            <div class="news-title-wrapper">
-                <?= Html::tag('h3', $article->title, ['class' => 'news-title']); ?>
+        <div>
+            <div class="news-wrapper show-news" data-title="<?= $article->title ?>" data-url="<?= Url::to(['site/show-news', 'id' => $article->id])?>" >
+                <?= Html::img(Url::to('@web/images/').$article->image_path); ?>
+                <div class="news-title-wrapper" style="cursor: default">
+                    <?= Html::tag('h3', $article->title, ['class' => 'news-title']); ?>
+                </div>
             </div>
-        </div>
-        <div class="text-center" style="background: rgba(0, 0, 0, 0.9);">
-            <div style="padding: 5px 0;">
-                <span class="like-ico ico-off"><?=Html::fa('heart fa-2x')?></span>
-                <span class="dislike-ico ico-off"><?=Html::fa('thumbs-down fa-2x')?></span>
+            <div class="text-center unselectable" style="background: rgba(0, 0, 0, 0.9);">
+                <div style="padding: 5px 0;">
+                    <span class="like-ico ico-off" style="display: inline-block; cursor: pointer;"><?=Html::fa('heart fa-2x')?><span style="font-size: 18px; vertical-align: bottom;"> Нравится</span></span>
+                    <span style="border-left: 1px solid #fff; height: 25px; vertical-align: bottom; display: inline-block;"></span>
+                    <span class="dislike-ico ico-off" style="display: inline-block; cursor: pointer;"><?=Html::fa('thumbs-down fa-2x')?><span style="font-size: 18px; vertical-align: bottom;"> Не нравится</span></span>
+                </div>
             </div>
+            <?= Html::tag('p', '#'.$article->firstTag->tag.', #'.$article->secondTag->tag, ['style' => ['margin' => '10px 0']]); ?>
+            <hr style="margin-top: 0;">
         </div>
-        <?= Html::tag('p', $article->firstTag->tag.', '.$article->secondTag->tag); ?>
-        <hr>
     <? endforeach; ?>
 </div>

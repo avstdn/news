@@ -1,11 +1,10 @@
 <?php
 namespace backend\controllers;
 
+use app\models\MembershipFunctions;
 use backend\models\Articles;
 use common\models\LoginForm;
 use Yii;
-use yii\filters\AccessControl;
-use yii\filters\VerbFilter;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 
@@ -80,7 +79,7 @@ class SiteController extends Controller
      */
     public function actionIndex()
     {
-        $articles = Articles::find()->orderBy(['date' => SORT_DESC])->limit(20)->all();
+        $articles = Articles::find()->orderBy(['id' => SORT_DESC])->limit(20)->all();
 
         return $this->render('index', compact('articles'));
     }
@@ -115,7 +114,8 @@ class SiteController extends Controller
     {
         Yii::$app->user->logout();
 
-        return $this->goHome();
+//        return $this->goHome();
+        return $this->redirect('login');
     }
 
     public function actionShowNews($id)
@@ -127,5 +127,37 @@ class SiteController extends Controller
         $this->layout = false;
 
         return $this->render('news', compact('article'));
+    }
+
+    public function actionSettings()
+    {
+        $mf = MembershipFunctions::findOne(0);
+
+        if ($mf->load(Yii::$app->request->post())) {
+            $mf->name = 'all';
+            $mf->user_id = Yii::$app->user->id;
+            if ($mf->save()) {
+                $this->setFlash('success', "Функции принадлежности обновлены");
+            } else {
+                $this->setFlash('danger', "Ошибка при обновлении");
+            }
+        }
+
+        $coords = $mf->coords;
+        $defaultCoords = MembershipFunctions::findOne(1)->coords;
+
+        return $this->render('settings', compact('mf', 'defaultCoords', 'coords'));
+    }
+
+//    public function beforeAction($action)
+//    {
+//        Yii::$app->language = 'ru-RU';
+//
+//        return parent::beforeAction($action);
+//    }
+
+    protected function setFlash($type, $message)
+    {
+        Yii::$app->getSession()->setFlash($type, $message);
     }
 }
